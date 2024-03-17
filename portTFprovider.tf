@@ -7,33 +7,50 @@ terraform {
   }
 }
 
+variable "PORT_CLIENT_ID" {}
+variable "PORT_CLIENT_SECRET" {}
+
 provider "port" {
-  client_id = "{{ secrets.PORT_CLIENT_ID }}"     # or set the environment variable PORT_CLIENT_ID
-  secret    = "{{ secrets.PORT_CLIENT_SECRET }}" # or set the environment variable PORT_CLIENT_SECRET
+  client_id = var.PORT_CLIENT_ID     # or set the environment variable PORT_CLIENT_ID
+  secret    = var.PORT_CLIENT_SECRET # or set the environment variable PORT_CLIENT_SECRET
+}
+
+resource "port_blueprint" "tf-test" {
+  identifier = "tf-test"
+  icon       = "Bucket"
+  title      = "Test from Terraform"
+
+  properties = {
+    boolean_props = {
+      isTF = {
+        title      = "Is from terraform?"
+        required   = false
+      }
+    }
+  }
+    relations = {
+      mySingleRelationToRepo = {
+        target   = "service"
+        title    = "Related Repo"
+        required = true
+        many     = false
+      }
+    }
 }
 
 resource "port_entity" "myEntity" {
-  identifier = "myEntity"
-  title      = "My Entity"
-  blueprint  = "myBlueprint"
+  identifier = "tfEntity" # Entity identifier
+  title      = "My TF Entity" # Entity title
+  blueprint  = "tf-test" # Identifier of the blueprint to create this entity from
 
   properties = {
-    "string_props" = {
-      "myStringProp" = "My string"
-    }
-    "number_props" = {
-      "myNumberProp" = 7
-    }
-    "boolean_props" = {
-      "myBooleanProp" = true
-    }
-    "object_props" = {
-      "myObjectProp" = jsonencode({ "my" : "object" })
-    }
-    "array_props" = {
-    "string_props" = {
-        "myArrayProp" = ["a", "b", "c"]
+    boolean_props = {
+      "isTF" = true
       }
+  }
+  relations = {
+    single_relations = {
+    "mySingleRelationToRepo" = "port-test"
     }
   }
 }
