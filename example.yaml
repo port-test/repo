@@ -1,0 +1,53 @@
+# Deployment Configuration Example
+version: 1.0
+deployments:
+  - id: 1
+    name: "Test Deployment"
+    type: "test"
+    description: "Deployment for testing environment"
+    settings:
+      branch: "develop"
+      actions:
+        - build
+        - deploy
+      resources:
+        cpu: "2 cores"
+        memory: "4GiB"
+    target:
+      platform: "Kubernetes"
+      namespace: "test-env"
+  - id: 2
+    name: "Staging Deployment"
+    type: "stage"
+    description: "Deployment for staging environment"
+    settings:
+      branch: "release-candidate"
+      actions:
+        - build
+        - deploy
+        - smokeTest
+      resources:
+        cpu: "4 cores"
+        memory: "8GiB"
+    target:
+      platform: "Kubernetes"
+      namespace: "stage-env"
+  - id: 3
+    name: "Production Deployment"
+    type: "prod"
+    description: "Deployment for production environment"
+    settings:
+      branch: "main"
+      actions:
+        - build
+        - deploy
+        - healthCheck
+        - monitor
+      resources:
+        cpu: "8 cores"
+        memory: "16GiB"
+    target:
+      platform: "Kubernetes"
+      namespace: "prod-env"
+
+# Add any other configurations or deployments as needed
