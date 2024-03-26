@@ -1,4 +1,3 @@
-# Deployment Configuration Example
 version: 1.0
 deployments:
   - id: 1
